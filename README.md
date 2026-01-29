@@ -22,3 +22,5 @@ A modern custom video player built using React and HTML5 video APIs with fully c
 
 ## 🌐 Live Demo
 https://react-video-player.vercel.app
+
+- Remembers watch progress using localStorage
