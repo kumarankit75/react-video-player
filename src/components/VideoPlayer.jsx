@@ -90,10 +90,25 @@ export default function VideoPlayer() {
     }
   };
 
-  const updateProgress = () => {
-    const video = videoRef.current;
-    setProgress((video.currentTime / video.duration) * 100 || 0);
-  };
+//   const updateProgress = () => {
+//     const video = videoRef.current;
+//     setProgress((video.currentTime / video.duration) * 100 || 0);
+//   };
+
+const updateProgress = () => {
+  const video = videoRef.current;
+  const current =
+    (video.currentTime / video.duration) * 100 || 0;
+
+  setProgress(current);
+
+  localStorage.setItem(
+    "video-time",
+    video.currentTime
+  );
+};
+
+
 
   const seek = (e) => {
     const video = videoRef.current;
@@ -124,6 +139,13 @@ export default function VideoPlayer() {
     document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
   }, []);
+
+  useEffect(() => {
+  const savedTime = localStorage.getItem("video-time");
+  if (savedTime && videoRef.current) {
+    videoRef.current.currentTime = Number(savedTime);
+  }
+}, []);
 
   return (
     <div className="player">
