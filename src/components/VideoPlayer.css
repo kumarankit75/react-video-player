@@ -1,0 +1,82 @@
+/* .player {
+  width: 800px;
+  margin: auto;
+  background: black;
+  position: relative;
+}
+
+video {
+  width: 100%;
+  cursor: pointer;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background: rgba(0,0,0,0.8);
+}
+
+button, select {
+  background: none;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+input[type="range"] {
+  flex: 1;
+} */
+
+
+
+
+.player {
+  width: 800px;
+  margin: auto;
+  position: relative;
+  background: black;
+}
+
+video {
+  width: 100%;
+  cursor: pointer;
+}
+
+.controls {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.player:hover .controls {
+  opacity: 1;
+}
+
+button, select {
+  background: none;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+input[type="range"] {
+  flex: 1;
+}
+
+.center-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 70px;
+  color: white;
+  cursor: pointer;
+  opacity: 0.8;
+}
