@@ -910,11 +910,13 @@
 
 
 
-import { useEffect, useRef, useState } from "react";
+// import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 export default function VideoPlayer() {
   const videoRef = useRef(null);
   const touchStartX = useRef(0);
+const lastUpdateRef = useRef(0);
 
   const playlist = [
     { id: 1, title: "Intro Video", src: "/video1.mp4" },
@@ -927,26 +929,65 @@ export default function VideoPlayer() {
   const [progress, setProgress] = useState(0);
   const [speed, setSpeed] = useState(1);
 
-  const togglePlay = () => {
-    const v = videoRef.current;
-    if (!v) return;
-    v.paused ? v.play() : v.pause();
-    setIsPlaying(!v.paused);
-  };
+  // const togglePlay = () => {
+  //   const v = videoRef.current;
+  //   if (!v) return;
+  //   v.paused ? v.play() : v.pause();
+  //   setIsPlaying(!v.paused);
+  // };
+const togglePlay = useCallback(() => {
+  const v = videoRef.current;
+  if (!v) return;
+  v.paused ? v.play() : v.pause();
+  setIsPlaying(!v.paused);
+}, []);
 
-  const updateProgress = () => {
-    const v = videoRef.current;
-    setProgress((v.currentTime / v.duration) * 100 || 0);
-    localStorage.setItem(
-      "video-time-" + currentIndex,
-      v.currentTime
-    );
-  };
 
-  const seek = (e) => {
-    videoRef.current.currentTime =
-      (e.target.value / 100) * videoRef.current.duration;
-  };
+
+
+
+  // const updateProgress = () => {
+  //   const v = videoRef.current;
+  //   setProgress((v.currentTime / v.duration) * 100 || 0);
+  //   localStorage.setItem(
+  //     "video-time-" + currentIndex,
+  //     v.currentTime
+  //   );
+  // };
+
+const updateProgress = () => {
+  const v = videoRef.current;
+  if (!v) return;
+
+  const now = Date.now();
+  if (now - lastUpdateRef.current < 500) return;
+
+  lastUpdateRef.current = now;
+
+  const percent = (v.currentTime / v.duration) * 100 || 0;
+  setProgress(percent);
+
+  localStorage.setItem(
+    "video-time-" + currentIndex,
+    v.currentTime
+  );
+};
+
+
+
+
+  // const seek = (e) => {
+  //   videoRef.current.currentTime =
+  //     (e.target.value / 100) * videoRef.current.duration;
+  // };
+
+const seek = useCallback((e) => {
+  const v = videoRef.current;
+  if (!v) return;
+  v.currentTime = (e.target.value / 100) * v.duration;
+}, []);
+
+
 
   const changeSpeed = (e) => {
     setSpeed(e.target.value);
@@ -991,6 +1032,7 @@ export default function VideoPlayer() {
       <div className="relative bg-black rounded-xl overflow-hidden shadow-2xl">
         <video
           ref={videoRef}
+          preload="metadata"
           src={playlist[currentIndex].src}
           onTimeUpdate={updateProgress}
           onClick={togglePlay}
